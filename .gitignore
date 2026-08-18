@@ -1,0 +1,31 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Node
+node_modules/
+dist/
+build/
+.npm/
+
+# Data and Models
+data/*
+!data/.gitkeep
+*.pth
+*.pt
+*.pkl
+*.h5
+*.onnx
+
+# OS
+.DS_Store
+Thumbs.db
