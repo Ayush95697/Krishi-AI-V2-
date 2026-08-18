@@ -6,18 +6,18 @@ An integrated, intelligent agricultural decision-support system for Indian farme
 To provide actionable, hyper-local, and scientifically grounded agricultural advisory by combining machine learning, robust data retrieval (RAG), and localized context (weather, soil, and crop).
 
 ## Current Status
-Architecture and repository foundation phase.
+Architecture and repository foundation phase. (IMPLEMENTED)
 
 ## Planned Features
 - Crop Recommendation
-- Crop Disease Detection
-- RAG-based Agricultural Chatbot
-- Weather Intelligence and Weather-aware Advisory
-- Soil Information and Interpretation
-- Financial Analysis
-- Smart Notifications
-- Farmer Dashboard
-- User Accounts and History
+- [NOT IMPLEMENTED] Crop Disease Detection
+- [NOT IMPLEMENTED] RAG-based Agricultural Chatbot
+- [NOT IMPLEMENTED] Weather Intelligence
+- [NOT IMPLEMENTED] Soil Information
+- [NOT IMPLEMENTED] Financial Analysis
+- [NOT IMPLEMENTED] Smart Notifications
+- [NOT IMPLEMENTED] Farmer Dashboard
+- [NOT IMPLEMENTED] User Accounts and History
 
 ## Architecture
 The system employs a multi-tier layered architecture:
