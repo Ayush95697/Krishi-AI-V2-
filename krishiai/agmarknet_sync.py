@@ -45,7 +45,7 @@ def sync_agmarknet_prices():
     logger.info("Starting Agmarknet price sync...")
     db = SessionLocal()
     try:
-        api_key = os.getenv("AGMARKNET_API_KEY", "579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b") 
+        api_key = os.getenv("AGMARKNET_API_KEY", "YOUR_API_KEY_HERE") 
         # Using a public demo key or dummy key if not set. User might need to provide a real one.
         
         url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
