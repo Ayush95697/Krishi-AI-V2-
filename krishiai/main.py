@@ -7,9 +7,11 @@ from apscheduler.triggers.cron import CronTrigger
 from krishiai.database import init_db, SessionLocal, CropPriceCache
 from krishiai.schemas import (
     CropRecommendationRequest, CropRecommendationResponse,
-    YieldPredictionRequest, YieldPredictionResponse, HealthResponse
+    YieldPredictionRequest, YieldPredictionResponse, HealthResponse,
+    SoilInterpretationRequest, SoilInterpretationResponse
 )
 from krishiai.ml_service import load_models, recommend_crop, estimate_yield_and_revenue
+from krishiai.soil_service import interpret_soil
 from krishiai.agmarknet_sync import sync_agmarknet_prices, seed_prices_if_empty
 
 logging.basicConfig(level=logging.INFO)
@@ -68,6 +70,11 @@ def recommend_crop_endpoint(request: CropRecommendationRequest):
 @app.post("/estimate-yield-and-revenue", response_model=YieldPredictionResponse)
 def estimate_yield_and_revenue_endpoint(request: YieldPredictionRequest):
     return estimate_yield_and_revenue(request.dict())
+
+@app.post("/interpret-soil", response_model=SoilInterpretationResponse)
+def interpret_soil_endpoint(request: SoilInterpretationRequest):
+    # Using request.dict() for consistency with other endpoints (even if deprecated in Pydantic v2)
+    return interpret_soil(**request.dict())
 
 @app.get("/health", response_model=HealthResponse)
 def health_check():

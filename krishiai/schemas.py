@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 class CropRecommendationRequest(BaseModel):
     N: float
@@ -40,3 +40,30 @@ class HealthResponse(BaseModel):
     status: str
     crops_supported: int
     crops_priced: int
+
+class SoilInterpretationRequest(BaseModel):
+    n_kg_ha: float
+    p_kg_ha: float
+    k_kg_ha: float
+    oc_percent: float
+    ph: float
+    ec_dsm: Optional[float] = None
+    s_ppm: Optional[float] = None
+    b_ppm: Optional[float] = None
+    zn_ppm: Optional[float] = None
+    fe_ppm: Optional[float] = None
+    mn_ppm: Optional[float] = None
+    cu_ppm: Optional[float] = None
+
+class ParameterRatingSchema(BaseModel):
+    parameter: str
+    value: float
+    unit: str
+    rating: str
+    source: str
+    note: Optional[str] = None
+
+class SoilInterpretationResponse(BaseModel):
+    ratings: Dict[str, ParameterRatingSchema]
+    concerns: List[str]
+    disclaimer: str
