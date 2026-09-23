@@ -8,10 +8,12 @@ from krishiai.database import init_db, SessionLocal, CropPriceCache
 from krishiai.schemas import (
     CropRecommendationRequest, CropRecommendationResponse,
     YieldPredictionRequest, YieldPredictionResponse, HealthResponse,
-    SoilInterpretationRequest, SoilInterpretationResponse
+    SoilInterpretationRequest, SoilInterpretationResponse,
+    WeatherAdvisoryRequest, WeatherAdvisoryResponse
 )
 from krishiai.ml_service import load_models, recommend_crop, estimate_yield_and_revenue
 from krishiai.soil_service import interpret_soil
+from krishiai.weather_service import get_weather_advisory
 from krishiai.agmarknet_sync import sync_agmarknet_prices, seed_prices_if_empty
 
 logging.basicConfig(level=logging.INFO)
@@ -75,6 +77,10 @@ def estimate_yield_and_revenue_endpoint(request: YieldPredictionRequest):
 def interpret_soil_endpoint(request: SoilInterpretationRequest):
     # Using request.dict() for consistency with other endpoints (even if deprecated in Pydantic v2)
     return interpret_soil(**request.dict())
+
+@app.post("/weather-advisory", response_model=WeatherAdvisoryResponse)
+def weather_advisory_endpoint(request: WeatherAdvisoryRequest):
+    return get_weather_advisory(**request.dict())
 
 @app.get("/health", response_model=HealthResponse)
 def health_check():

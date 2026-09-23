@@ -67,3 +67,27 @@ class SoilInterpretationResponse(BaseModel):
     ratings: Dict[str, ParameterRatingSchema]
     concerns: List[str]
     disclaimer: str
+
+class WeatherAdvisoryRequest(BaseModel):
+    latitude: float
+    longitude: float
+    crop: Optional[str] = None
+
+class DailyForecastSchema(BaseModel):
+    date: str
+    temp_max: float
+    temp_min: float
+    precipitation_mm: float
+    precipitation_probability: float
+    humidity_max: float
+
+class AdvisoryMessageSchema(BaseModel):
+    category: str
+    severity: str
+    message: str
+
+class WeatherAdvisoryResponse(BaseModel):
+    location: str
+    daily_forecast: List[DailyForecastSchema]
+    triggered_advisories: List[AdvisoryMessageSchema]
+    disclaimer: str
