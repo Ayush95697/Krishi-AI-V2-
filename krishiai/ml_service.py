@@ -23,7 +23,7 @@ def load_models():
 
     crop_model = joblib.load(os.path.join(MODELS_DIR, "crop_recommendation_RandomForest.joblib"))
     crop_label_encoder = joblib.load(os.path.join(MODELS_DIR, "crop_recommendation_label_encoder.joblib"))
-    
+
     yield_model = joblib.load(os.path.join(MODELS_DIR, "yield_prediction_RandomForestRegressor.joblib"))
     yield_le_crop = joblib.load(os.path.join(MODELS_DIR, "yield_le_crop.joblib"))
     yield_le_state = joblib.load(os.path.join(MODELS_DIR, "yield_le_state.joblib"))
@@ -82,50 +82,21 @@ def estimate_yield_and_revenue(input_data: Dict[str, Any]) -> Dict[str, Any]:
     except ValueError:
         raise HTTPException(status_code=400, detail=f"Unrecognized season value: {season}")
 
-    # Prepare DataFrame
-    # ['Crop', 'Crop_Year', 'Season', 'State', 'Area', 'Production', 'Annual_Rainfall', 'Fertilizer', 'Pesticide', 'Yield']
-    # Wait, what are the exact feature names the yield model expects?
-    # I will construct the DataFrame based on typical names, but we should match what was used.
-    # The user prompt: Inputs: crop (str), state (str), season (str), crop_year (int), annual_rainfall (float), fertilizer (float), pesticide (float), area (float).
+    
+    if input_data["area"] <= 0:
+        raise HTTPException(status_code=400, detail="Area must be greater than zero")
+
     df = pd.DataFrame([{
-        "Crop": encoded_crop,
+        "Crop_enc": encoded_crop,
+        "State_enc": encoded_state,
+        "Season_enc": encoded_season,
         "Crop_Year": input_data["crop_year"],
-        "Season": encoded_season,
-        "State": encoded_state,
-        "Area": input_data["area"],
         "Annual_Rainfall": input_data["annual_rainfall"],
         "Fertilizer": input_data["fertilizer"],
-        "Pesticide": input_data["pesticide"]
+        "Pesticide": input_data["pesticide"],
+        "Area": input_data["area"],
     }])
-    
-    # Actually, we don't know the exact column names. I will use the columns in the order the user listed them or standard capitalization.
-    # If there's an issue with column names, sklearn might warn, but let's try exactly these column names.
-    # Wait, the Notebook has the exact names. Let's list the expected features from the model if possible, but let's assume ['Crop', 'Crop_Year', 'Season', 'State', 'Area', 'Annual_Rainfall', 'Fertilizer', 'Pesticide'] based on capitalization.
-    # Actually, in scikit-learn, the order of columns matters most if trained on numpy arrays, but if trained on pandas, column names must match exactly.
-    # Let's check feature names in the model.
-    if hasattr(yield_model, "feature_names_in_"):
-        # Create DataFrame with exact column names that the model expects
-        feature_names = yield_model.feature_names_in_
-        row_dict = {
-            "Crop": encoded_crop,
-            "Crop_Year": input_data["crop_year"],
-            "Season": encoded_season,
-            "State": encoded_state,
-            "Area": input_data["area"],
-            "Annual_Rainfall": input_data["annual_rainfall"],
-            "Fertilizer": input_data["fertilizer"],
-            "Pesticide": input_data["pesticide"]
-        }
-        
-        # Case insensitive matching just in case
-        case_insensitive_dict = {k.lower(): v for k, v in row_dict.items()}
-        
-        constructed_row = {}
-        for fn in feature_names:
-            constructed_row[fn] = case_insensitive_dict.get(fn.lower(), 0.0)
-            
-        df = pd.DataFrame([constructed_row])
-    
+
     predicted_log_yield = yield_model.predict(df)[0]
     predicted_yield = np.expm1(predicted_log_yield)
     
